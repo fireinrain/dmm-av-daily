@@ -1,3 +1,4 @@
+import re
 from datetime import datetime, timedelta
 
 
@@ -28,6 +29,28 @@ def generate_date_list(start_date: str = "2002-06-14", end_date: str = "-1") -> 
         current_date += timedelta(days=1)
 
     return date_list
+
+
+def get_max_page(text: str) -> [str]:
+    pattern = r'page=\d+'
+    # Use the findall() function to extract all occurrences of the pattern
+    matches = re.findall(pattern, text)
+
+    # Print the extracted matches
+    # results = set()
+    # for match in matches:
+    #     # print(match)
+    #     results.add(match.replace("page=", ""))
+    # results = sorted(list(results))
+    # return int(results[-1])
+    # print(results)
+    results = set()
+    for match in matches:
+        # print(match)
+        results.add(match)
+    results = sorted(list(results))
+    # print(results)
+    return results
 
 
 if __name__ == '__main__':
