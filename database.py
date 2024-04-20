@@ -1,8 +1,13 @@
+import logging
+
 from sqlalchemy import create_engine, Column, Integer, String, DateTime, Boolean, text
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 
 from sqlalchemy.orm import declarative_base
+
+# logging.basicConfig()
+# logging.getLogger('sqlalchemy.engine').setLevel(logging.ERROR)
 
 Base = declarative_base()
 
@@ -101,6 +106,8 @@ class FilmDetailItem(Base):
     film_tags = Column(String, nullable=False)
     # 番号
     film_code = Column(String, nullable=False)
+    # 作品内容简介
+    film_desc = Column(String, nullable=False)
 
     del_flag = Column(Boolean, default=False)
     create_time = Column(DateTime, server_default=text('CURRENT_TIMESTAMP'))
