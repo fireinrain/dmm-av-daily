@@ -52,7 +52,7 @@ async def fetch_data(url: str, proxy_url: str) -> str:
             return f"Error: request failed: {e}"
 
 
-def extract_film_intro_item(html_content: str) -> [{}]:
+def extract_film_intro_item(html_content: str) -> list:
     result = []
     soup = BeautifulSoup(html_content, 'html.parser')
     items = soup.select('#list > li > div')
@@ -104,5 +104,6 @@ def extract_film_intro_item(html_content: str) -> [{}]:
     return result
 
 
-def extract_film_detail_item(html_content: str) -> []:
+def extract_film_detail_item(html_content: str) -> dict:
+    print("--------------------------------")
     pass

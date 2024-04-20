@@ -33,6 +33,8 @@ class FilmIntroItem(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     # 标题
     film_title = Column(String, nullable=False)
+    # 封面地址
+    film_cover_url = Column(String, nullable=False)
     # 详情页地址
     film_detail_url = Column(String, nullable=False)
     # 主演
@@ -108,6 +110,10 @@ class FilmDetailItem(Base):
     film_code = Column(String, nullable=False)
     # 作品内容简介
     film_desc = Column(String, nullable=False)
+    # 作品样片图地址前缀
+    film_sample_image_prefix = Column(String, nullable=False)
+    # 作品样片图集合 格式 xxxx.jpg,abc.jpg
+    film_sample_images = Column(String, nullable=False)
 
     del_flag = Column(Boolean, default=False)
     create_time = Column(DateTime, server_default=text('CURRENT_TIMESTAMP'))
