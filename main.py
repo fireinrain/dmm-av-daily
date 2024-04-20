@@ -15,10 +15,10 @@ async def main():
     url = "https://www.dmm.co.jp/digital/videoa/-/delivery-list/=/delivery_date=2002-06-14/"
     url2 = "https://www.dmm.co.jp/digital/videoa/-/detail/=/cid=baj013/"
     response = await crawl.fetch_data(url, proxy_url=proxy_url)
-    print(response)
+    # print(response)
 
-    utils.get_max_page(response)
-
+    # utils.get_max_page(response)
+    crawl.extract_film_intro_item(response)
 
 # Run the asyncio event loop
 if __name__ == "__main__":

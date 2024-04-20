@@ -1,5 +1,6 @@
 import aiohttp
 from aiohttp_socks import ProxyType, ProxyConnector, ChainProxyConnector
+from bs4 import BeautifulSoup
 
 
 # fetch response from a url
@@ -49,3 +50,59 @@ async def fetch_data(url: str, proxy_url: str) -> str:
                     return f"Error: {response.status}"
         except Exception as e:
             return f"Error: request failed: {e}"
+
+
+def extract_film_intro_item(html_content: str) -> [{}]:
+    result = []
+    soup = BeautifulSoup(html_content, 'html.parser')
+    items = soup.select('#list > li > div')
+    for i in items:
+        # print(i.text)
+        film_detail_url = ""
+        try:
+            atag = i.select_one("p > a")
+            film_detail_url = atag.attrs['href']
+        except Exception as e:
+            pass
+        cover_img_url = ""
+        try:
+            img_tag = i.select_one("p > a > span > img")
+            cover_img_url = img_tag.attrs['src']
+        except Exception as e:
+            pass
+
+        film_title = ""
+        try:
+            title_tag = i.select_one("p > a > span")
+            span_next_tag = title_tag.find_next_sibling()
+            film_title = span_next_tag.text
+        except Exception as e:
+            pass
+
+        film_star = ""
+        try:
+            star_tag = i.select_one('.sublink > span > a')
+            film_star = star_tag.text
+        except Exception as e:
+            pass
+
+        film_price = ""
+        try:
+            price_tag = i.select_one('.value > p')
+            price_next_tag = price_tag.find_next_sibling()
+            film_price = price_next_tag.text.replace('円', '')
+        except Exception as e:
+            pass
+        data = {}
+        data['film_detail_url'] = film_detail_url
+        data['film_cover_url'] = cover_img_url
+        data['film_title'] = film_title
+        data['film_star'] = film_star
+        data['film_price'] = film_price
+        result.append(data)
+        # print("--------------------------------")
+    return result
+
+
+def extract_film_detail_item(html_content: str) -> []:
+    pass
