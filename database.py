@@ -17,6 +17,7 @@ class TelegramInfo(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     telegraph_post_url = Column(String, nullable=False)
+    film_detail_id = Column(Integer, nullable=False)
     has_create_post = Column(Boolean, default=False)
     has_push_channel = Column(Boolean, default=False)
 

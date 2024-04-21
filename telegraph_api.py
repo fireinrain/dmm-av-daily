@@ -14,6 +14,7 @@ async def create_telegraph_post(run_date: str):
         # store record in database
         telegraph_info = database.TelegramInfo(
             telegraph_post_url="",
+            film_detail_id=item.id
         )
         try:
             database.session.add(telegraph_info)
@@ -59,6 +60,9 @@ async def create_telegraph_post(run_date: str):
             except Exception as e:
                 print(f"更新记录失败: {e}")
                 database.session.rollback()
+        # 清理图片下载缓存
+        print(f">>> Clean Image download cache.")
+        utils.clean_img_folder('imgs')
 
 
 def generate_html_content(item: database.FilmDetailItem, image_urls: []) -> str:

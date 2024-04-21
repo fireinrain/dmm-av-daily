@@ -4,7 +4,7 @@ import os
 from sqlalchemy import desc
 
 import crawl
-import telegraph
+import telegraph_api
 import tgbot
 
 import utils
@@ -17,6 +17,7 @@ if socks5_proxy_url:
     SOCKS5_PROXY_URL = socks5_proxy_url
 else:
     print(f"you must provide a socks5 proxy url like: `socks5://username:pass@host:port`!")
+
 
 def init_basic_db():
     latest_record = database.session.query(DmmAvDaily).order_by(desc(DmmAvDaily.id)).first()
@@ -161,7 +162,7 @@ async def main():
             database.session.rollback()
 
         # 创建telegraph post
-        await telegraph.create_telegraph_post(dmm.run_date)
+        await telegraph_api.create_telegraph_post(dmm.run_date)
         # 推送tg bot消息到频道
         await tgbot.push_telegram_channel(dmm.run_date)
         print(f">>> 当前所有任务运行完成!")
