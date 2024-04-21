@@ -1,5 +1,10 @@
+import os
+import random
 import re
 from datetime import datetime, timedelta
+from urllib.parse import urlparse
+
+import aiohttp
 
 
 def generate_date_list(start_date: str = "2002-06-14", end_date: str = "-1") -> [str]:
@@ -51,6 +56,46 @@ def get_max_page(text: str) -> [str]:
     results = sorted(list(results))
     # print(results)
     return results
+
+
+USER_AGENTS = [
+    "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:77.0) Gecko/20100101 Firefox/77.0",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15",
+    "Mozilla/5.0 (iPad; CPU OS 13_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Mobile/15E148 Safari/604.1",
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36",
+    "Mozilla/5.0 (Linux; Android 10; SM-G975F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.96 Mobile Safari/537.36",
+    "Mozilla/5.0 (iPhone; CPU iPhone OS 13_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Mobile/15E148 Safari/604.1",
+    "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:54.0) Gecko/20100101 Firefox/54.0"
+]
+
+
+async def download_file(url: str, destination: str) -> str:
+    headers = {
+        'User-Agent': random.choice(USER_AGENTS)
+    }
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url, headers=headers) as response:
+            response.raise_for_status()  # Raise an exception for HTTP errors
+            with open(destination, 'wb') as file:
+                while True:
+                    chunk = await response.content.read(1024)
+                    if not chunk:
+                        break
+                    file.write(chunk)
+
+            print(f'>>> Download completed: {destination}')
+    return destination
+
+
+def get_filename_from_url(url: str) -> str:
+    # Parse the URL to get the path part
+    parsed_url = urlparse(url)
+    # Use os.path.basename to get the filename part from the path
+    file_name = os.path.basename(parsed_url.path)
+    return file_name
 
 
 if __name__ == '__main__':
