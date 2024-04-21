@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import httpx
 from httpx import AsyncClient
 
 from .exceptions import TelegraphException, ResponseNotOk, RetryAfterError
@@ -58,11 +59,12 @@ class AsyncTelegraphApi:
     async def upload_file(self, f):
         if self._is_closed: raise TelegraphException(
             'Once the client instance has been closed, no more requests can be made.')
-
+        timeout = httpx.Timeout()
         with FilesOpener(f) as files:
             response = await self.session.post(
                 'https://{}/upload'.format(self.domain),
-                files=files
+                files=files,
+                timeout=timeout
             )
 
         if response.status_code >= 400:
