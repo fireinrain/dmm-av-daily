@@ -84,6 +84,8 @@ class FilmDetailItem(Base):
     film_pic_url = Column(String, nullable=False)
     # 作品海报
     film_poster_url = Column(String, nullable=False)
+    # 作品标题
+    film_title = Column(String, nullable=False)
     # 作品配信開始日
     film_publish_date = Column(String, nullable=False)
     # 上架日期
