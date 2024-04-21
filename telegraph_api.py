@@ -36,7 +36,7 @@ async def create_telegraph_post(run_date: str):
             download_files.append(download_file)
         # 上传到telegraph
         image_urls_on_telegraph = await AsyncUploadFile(download_files)
-        await asyncio.sleep(1)
+        await asyncio.sleep(1.5)
 
         tgph_post_url = ''
         async with AsyncTelegraph() as telegraph:
@@ -59,7 +59,6 @@ async def create_telegraph_post(run_date: str):
             except Exception as e:
                 print(f"更新记录失败: {e}")
                 database.session.rollback()
-        # push to tg channel
 
 
 def generate_html_content(item: database.FilmDetailItem, image_urls: []) -> str:

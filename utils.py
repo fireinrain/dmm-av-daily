@@ -98,6 +98,26 @@ def get_filename_from_url(url: str) -> str:
     return file_name
 
 
+def clean_img_folder(img_folder: str):
+    # Define the image file extensions to search for
+    image_extensions = ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.tiff']
+
+    # Walk through the directory
+    for root, dirs, files in os.walk(img_folder):
+        for file in files:
+            # Check if the file extension is in our list of image extensions
+            if any(file.lower().endswith(ext) for ext in image_extensions):
+                file_path = os.path.join(root, file)
+                try:
+                    # Remove the image file
+                    os.remove(file_path)
+                    print(f">>> Deleted file: {file_path}")
+                except OSError as e:
+                    # If error occurs during file deletion, print the message
+                    print(f">>> Error: {e.strerror} while deleting file {file_path}")
+
+
 if __name__ == '__main__':
     date_list = generate_date_list(end_date='2004-02-01')
     print(date_list)
+    clean_img_folder("imgs")

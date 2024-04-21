@@ -1,4 +1,5 @@
 import asyncio
+import os
 
 from sqlalchemy import desc
 
@@ -10,10 +11,12 @@ import utils
 import database
 from database import DmmAvDaily, FilmDetailItem, FilmIntroItem
 
-proxy_username = 'socks5-proxy-bomb'
-proxy_password = 'socks5-proxy-bomb'
-proxy_url = f'socks5://{proxy_username}:{proxy_password}@socks5-proxy-bomb.fly.dev:1080'
-
+SOCKS5_PROXY_URL = None
+socks5_proxy_url = os.getenv('SOCKS5_PROXY_URL')
+if socks5_proxy_url:
+    SOCKS5_PROXY_URL = socks5_proxy_url
+else:
+    print(f"you must provide a socks5 proxy url like: `socks5://username:pass@host:port`!")
 
 def init_basic_db():
     latest_record = database.session.query(DmmAvDaily).order_by(desc(DmmAvDaily.id)).first()
@@ -63,7 +66,7 @@ async def main():
         # resp = await crawl.fetch_data(url3, proxy_url=proxy_url)
         # crawl.extract_film_detail_item(resp)
 
-        dmm_av_daily_resp = await crawl.fetch_data(dmm.fetch_url, proxy_url=proxy_url)
+        dmm_av_daily_resp = await crawl.fetch_data(dmm.fetch_url, proxy_url=SOCKS5_PROXY_URL)
         # print(dmm_av_daily_resp)
         intro_item = crawl.extract_film_intro_item(dmm_av_daily_resp)
 
@@ -74,7 +77,7 @@ async def main():
             # print(pages)
             for page in pages:
                 page_url = dmm.fetch_url + page + "/"
-                dmm_av_daily_page_resp = await crawl.fetch_data(page_url, proxy_url=proxy_url)
+                dmm_av_daily_page_resp = await crawl.fetch_data(page_url, proxy_url=SOCKS5_PROXY_URL)
                 page_intro_item = crawl.extract_film_intro_item(dmm_av_daily_page_resp)
                 intro_item.extend(page_intro_item)
         # insert intro_item to database
@@ -99,7 +102,7 @@ async def main():
             database.session.rollback()
         # 爬取详情
         for item in intro_item:
-            detail_resp = await crawl.fetch_data(item['film_detail_url'], proxy_url=proxy_url)
+            detail_resp = await crawl.fetch_data(item['film_detail_url'], proxy_url=SOCKS5_PROXY_URL)
             detail_dict = crawl.extract_film_detail_item(item['film_detail_url'], detail_resp)
             film_detail = FilmDetailItem(
                 film_detail_url=detail_dict['film_detail_url'],
