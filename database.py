@@ -12,6 +12,19 @@ from sqlalchemy.orm import declarative_base
 Base = declarative_base()
 
 
+class TelegramInfo(Base):
+    __tablename__ = 'telegram_info_detail'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    telegraph_post_url = Column(String, nullable=False)
+    has_create_post = Column(Boolean, default=False)
+    has_push_channel = Column(Boolean, default=False)
+
+    del_flag = Column(Boolean, default=False)
+    create_time = Column(DateTime, server_default=text('CURRENT_TIMESTAMP'))
+    update_time = Column(DateTime, server_default=text('CURRENT_TIMESTAMP'), onupdate=datetime.now)
+
+
 class DmmAvDaily(Base):
     __tablename__ = 'dmm_av_daily'
 
@@ -80,6 +93,8 @@ class FilmDetailItem(Base):
     __tablename__ = 'film_detail_item'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
+    # 详情页地址
+    film_detail_url = Column(String, nullable=False)
     # 作品缩略图
     film_pic_url = Column(String, nullable=False)
     # 作品海报

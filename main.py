@@ -3,6 +3,8 @@ import asyncio
 from sqlalchemy import desc
 
 import crawl
+import telegraph
+import tgbot
 
 import utils
 import database
@@ -98,8 +100,9 @@ async def main():
         # 爬取详情
         for item in intro_item:
             detail_resp = await crawl.fetch_data(item['film_detail_url'], proxy_url=proxy_url)
-            detail_dict = crawl.extract_film_detail_item(detail_resp)
+            detail_dict = crawl.extract_film_detail_item(item['film_detail_url'], detail_resp)
             film_detail = FilmDetailItem(
+                film_detail_url=detail_dict['film_detail_url'],
                 film_pic_url=detail_dict['film_pic_url'],
                 # 作品海报
                 film_poster_url=detail_dict['film_poster_url'],
@@ -154,13 +157,11 @@ async def main():
             print(f">>> 更新爬取任务记录失败: {e}")
             database.session.rollback()
 
-        # TODO 创建telegraph post
-
-        # TODO 推送tg bot消息到频道
-
-
-
-
+        # 创建telegraph post
+        await telegraph.create_telegraph_post(dmm.run_date)
+        # 推送tg bot消息到频道
+        await tgbot.push_telegram_channel(dmm.run_date)
+        print(f">>> 当前所有任务运行完成!")
 
 
 # Run the asyncio event loop

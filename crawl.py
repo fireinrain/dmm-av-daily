@@ -111,9 +111,9 @@ def extract_film_intro_item(html_content: str) -> list:
     return result
 
 
-def extract_film_detail_item(html_content: str) -> dict:
+def extract_film_detail_item(film_detail_url: str, html_content: str) -> dict:
     result = {}
-
+    result['film_detail_url'] = film_detail_url
     soup = BeautifulSoup(html_content, 'html.parser')
 
     film_poster_url = ""

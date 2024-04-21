@@ -2,6 +2,8 @@ from telegram import Bot
 import os
 import asyncio
 
+import database
+
 # Replace 'YOUR_BOT_TOKEN' with the token you received from BotFather
 BOT_TOKEN = None
 CHAT_ID = None
@@ -25,6 +27,11 @@ async def send_message2bot(message: str):
         await bot.send_message(chat_id=CHAT_ID, text=message, parse_mode="MarkdownV2")
 
 
+async def push_telegram_channel(run_date: str):
+    date_all = database.session.query(database.FilmDetailItem).filter_by(film_publish_date=run_date).all()
+
+    pass
+
+
 if __name__ == '__main__':
     asyncio.run(send_message2bot("你好"))
-
