@@ -83,13 +83,19 @@ async def push_telegram_channel(run_date: str):
                        f"\#D{formatted_date}")
 
             # URLs for the buttons
-            url1 = f'https://netflav5.com/search?type=title&keyword={item.film_code}#query#jump#{item.film_code}'
-            url2 = f'{tgph_poster.telegraph_post_url}'
+            url1 = f'https://Missav.com/search/{item.film_code}#query#jump'
+            url2 = f'https://www5.Javmost.com/search/{item.film_code}/#query#jump'
+            url3 = f'https://netflav5.com/search?type=title&keyword={item.film_code}#query#jump'
+            url4 = f'{tgph_poster.telegraph_post_url}'
+            # https://Missav.com/search/%s#query#jump
+            # https://www5.Javmost.com/search/%s/#query#jump
 
             # Create an InlineKeyboardMarkup with two buttons
             keyboard = [
-                [InlineKeyboardButton("去NETFLAV观看", url=url1),
-                 InlineKeyboardButton("去Telegraph查看明细", url=url2)],
+                [InlineKeyboardButton("MissAV观看", url=url1),
+                 InlineKeyboardButton("JavMost观看", url=url2)],
+                [InlineKeyboardButton("Netflav观看", url=url3),
+                 InlineKeyboardButton("Telegraph查看明细", url=url4)],
             ]
             reply_markup = InlineKeyboardMarkup(keyboard)
 
