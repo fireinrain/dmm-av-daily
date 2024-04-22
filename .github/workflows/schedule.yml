@@ -10,9 +10,9 @@ on:
     # run on every hour
     # - cron: "0 * * * *"
     # run on every 3 hour
-    # - cron: "0 */3 * * *"
+     - cron: "0 */2 * * *"
     # run on every 15 min
-    - cron: "*/5 * * * *"
+    # - cron: "*/5 * * * *"
 
 
 jobs:
