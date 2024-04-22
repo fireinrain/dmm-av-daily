@@ -9,9 +9,10 @@ on:
   schedule:
     # run on every hour
     # - cron: "0 * * * *"
-    - cron: "0 */3 * * *"
+    # run on every 3 hour
+    # - cron: "0 */3 * * *"
     # run on every 15 min
-    # - cron: "*/15 * * * *"
+    - cron: "*/5 * * * *"
 
 
 jobs:

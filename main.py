@@ -204,4 +204,7 @@ async def main():
 
 # Run the asyncio event loop
 if __name__ == "__main__":
+    # https://www.dmm.co.jp/digital/videoa/-/delivery-list/=/delivery_date=2002-06-14/
+    # https://www.dmm.co.jp/digital/videoa/-/delivery-list/=/delivery_date=2002-06-16/
+    # 测试连接
     asyncio.run(main())
