@@ -41,7 +41,9 @@ async def push_telegram_channel(run_date: str):
         poster_url = item.film_poster_url
         # file_name = utils.get_filename_from_url(poster_url)
         # download_file = await utils.download_file(poster_url, "imgs" + os.sep + file_name)
-
+        first = database.session.query(database.TelegramInfo).filter_by(film_detail_id=item.id).first()
+        if first is not None and first.has_push_channel:
+            continue
         # get poster url
         tgph_poster = database.session.query(database.TelegramInfo).filter_by(film_detail_id=item.id).first()
         # set message to tg channel

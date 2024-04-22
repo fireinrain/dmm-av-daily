@@ -162,20 +162,23 @@ async def store_dmm_data_job():
             print(f">>> 更新爬取任务记录失败: {e}")
             database.session.rollback()
 
+        await telegraph_api.create_telegraph_post(dmm.run_date)
+        print(f">>> 创建Telegraph Post任务完成!")
         print(f">>> 存储DMM AV 信息任务完成!")
 
 
-async def create_telegraph_post_job():
-    # 创建telegraph post
-    need_process_urls = database.session.query(DmmAvDaily).filter_by(has_run=False).limit(1).all()
-    for dmm in need_process_urls:
-        await telegraph_api.create_telegraph_post(dmm.run_date)
-    print(f">>> 创建Telegraph Post任务完成!")
+# async def create_telegraph_post_job():
+#     # 创建telegraph post
+#     need_process_urls = database.session.query(DmmAvDaily).filter_by(has_run=True).order_by(desc(DmmAvDaily.id)).limit(
+#         1).all()
+#     for dmm in need_process_urls:
+#         await telegraph_api.create_telegraph_post(dmm.run_date)
+#     print(f">>> 创建Telegraph Post任务完成!")
 
 
 async def push_infos2telegram_channel_job():
     # 推送tg bot消息到频道
-    need_process_urls = database.session.query(DmmAvDaily).filter_by(has_run=False).limit(1).all()
+    need_process_urls = database.session.query(DmmAvDaily).filter_by(has_run=True).order_by(desc(DmmAvDaily.id)).limit(1).all()
     for dmm in need_process_urls:
         await tgbot.push_telegram_channel(dmm.run_date)
     print(f">>> 推送信息到Telegram Channel完成!")
@@ -190,8 +193,8 @@ async def main():
 
     if argument == "store":
         await store_dmm_data_job()
-    elif argument == "create":
-        await create_telegraph_post_job()
+    # elif argument == "create":
+    #     await create_telegraph_post_job()
     elif argument == "push":
         await push_infos2telegram_channel_job()
     else:

@@ -1,15 +1,15 @@
 # This workflow will scrap GitHub trending projects daily.
-name: Daily Jav-DMM-FANZA Push
+name: Daily Jav-DMM-FANZA
 
 on:
   push:
     branches:
       - master
 #    tags: [ "v[0-9]+.[0-9]+.[0-9]+*" ]
-#  schedule:
+  schedule:
     # run on every hour
     # - cron: "0 * * * *"
-#    - cron: "0 */3 * * *"
+    - cron: "0 */3 * * *"
     # run on every 15 min
     # - cron: "*/15 * * * *"
 
@@ -36,9 +36,31 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Run DMM AV Daily Push
+    - name: Run DMM AV Daily store
       run: |
         python main.py store
+
+    - name: Check for changes
+      id: git-status
+      run: |
+        git diff --exit-code || echo "::set-output name=changed::true"
+      continue-on-error: true
+
+    # Runs a set of commands using the runners shell
+    - name: Push to origin master
+      if: steps.git-status.outputs.changed == 'true'
+      run: |
+        echo start push
+        git config --global user.name "fireinrain"
+        git config --global user.email "lzyme.dev@gmail.com"
+        
+        git add -A
+        git commit -m $(date '+%Y-%m-%d')
+        git push
+
+    - name: Run DMM AV Daily push
+      run: |
+        python main.py push
 
     - name: Check for changes
       id: git-status

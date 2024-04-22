@@ -11,6 +11,9 @@ async def create_telegraph_post(run_date: str):
     date_all = database.session.query(database.FilmDetailItem).filter_by(
         film_publish_date=run_date.replace("-", "/")).all()
     for item in date_all:
+        first = database.session.query(database.TelegramInfo).filter_by(film_detail_id=item.id).first()
+        if first is not None and first.has_create_post:
+            continue
         # store record in database
         telegraph_info = database.TelegramInfo(
             telegraph_post_url="",
