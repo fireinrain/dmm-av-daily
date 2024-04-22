@@ -36,8 +36,6 @@ async def send_message2bot(message: str):
 async def push_telegram_channel(run_date: str):
     date_all = database.session.query(database.FilmDetailItem).filter_by(
         film_publish_date=run_date.replace("-", "/")).all()
-    # reverse order
-    date_all.reverse()
     bot = Bot(BOT_TOKEN)
     for item in date_all:
         poster_url = item.film_poster_url

@@ -2,7 +2,7 @@ import asyncio
 import os
 import sys
 
-from sqlalchemy import desc
+from sqlalchemy import desc,asc
 
 import crawl
 import telegraph_api
@@ -178,7 +178,7 @@ async def store_dmm_data_job():
 
 async def push_infos2telegram_channel_job():
     # 推送tg bot消息到频道
-    need_process_urls = database.session.query(DmmAvDaily).filter_by(has_run=True).order_by(desc(DmmAvDaily.id)).limit(14).all()
+    need_process_urls = database.session.query(DmmAvDaily).filter_by(has_run=True).order_by(asc(DmmAvDaily.id)).limit(14).all()
     for dmm in need_process_urls:
         await tgbot.push_telegram_channel(dmm.run_date)
     print(f">>> 推送信息到Telegram Channel完成!")
