@@ -139,7 +139,9 @@ class FilmDetailItem(Base):
 
 
 # Example usage
-engine = create_engine('sqlite:///dmm-av-daily.db', echo=True)
+# engine = create_engine('sqlite:///dmm-av-daily.db', echo=True)
+engine = create_engine('sqlite:///dmm-av-daily.db', echo=False)
+
 Base.metadata.create_all(engine)
 
 Session = sessionmaker(bind=engine)
