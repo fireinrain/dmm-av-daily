@@ -19,6 +19,10 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    concurrency:
+      group: my-scheduled-job
+      cancel-in-progress: true # Optional: if you want to cancel any currently running job when a new one is triggered
+
     env:
       TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
       TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN}}
