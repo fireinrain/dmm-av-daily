@@ -67,7 +67,12 @@ async def push_telegram_channel(run_date: str):
                 film_title = film_title.replace('`', ' ')
 
             # do translate title
-            translated_texts = await traslation.translate_text(film_title, 'JP', ['ZH', ])
+            translated_texts = {}
+            try:
+                translated_texts = await traslation.translate_text(film_title, 'JP', ['ZH', ])
+            except Exception as e:
+                print(f">>> 翻译作品标题失败: {e}")
+                translated_texts['ZH'] = ''
             # Caption for the photo
             formatted_date = run_date.replace("-", "")
             caption = (f"番号: `{item.film_code}`, 演员: `{item.film_stars}`\n"

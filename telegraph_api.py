@@ -34,10 +34,17 @@ async def create_telegraph_post(run_date: str):
         for image_url in image_urls:
             file_name = utils.get_filename_from_url(image_url)
             download_file = await utils.download_file(image_url, "imgs" + os.sep + file_name)
+            if download_file == "":
+                continue
             download_files.append(download_file)
+            await asyncio.sleep(0.01)
         # 上传到telegraph
-        image_urls_on_telegraph = await AsyncUploadFile(download_files)
-        await asyncio.sleep(1.5)
+        image_urls_on_telegraph = []
+        try:
+            image_urls_on_telegraph = await AsyncUploadFile(download_files)
+            await asyncio.sleep(3)
+        except Exception as e:
+            print(f"样品图上传Telegraph 失败: {e}")
 
         tgph_post_url = ''
         async with AsyncTelegraph() as telegraph:

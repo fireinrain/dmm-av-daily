@@ -158,83 +158,84 @@ def extract_film_detail_item(film_detail_url: str, html_content: str) -> dict:
     result['film_tags'] = ''
     result['film_code'] = ''
     data_tags = soup.select_one('table.mg-b20 > tr')
-    for data_tag in data_tags:
-        text = data_tag.text
-        text = text.replace('\r', '').replace('\n', '').replace('\r\n', '')
-        text = text.strip()
-        if text == '':
-            continue
-        if '自動生成のため、関連度の低いタグが                    表示される場合があります。' in text:
-            text = text.replace('自動生成のため、関連度の低いタグが                    表示される場合があります。', '')
+    if data_tags:
+        for data_tag in data_tags:
+            text = data_tag.text
+            text = text.replace('\r', '').replace('\n', '').replace('\r\n', '')
+            text = text.strip()
+            if text == '':
+                continue
+            if '自動生成のため、関連度の低いタグが                    表示される場合があります。' in text:
+                text = text.replace('自動生成のため、関連度の低いタグが                    表示される場合があります。', '')
 
-        if text.startswith('VR対応デバイス'):
-            support_device = text.split("：")[-1]
-            result['support_device'] = support_device
-            continue
+            if text.startswith('VR対応デバイス'):
+                support_device = text.split("：")[-1]
+                result['support_device'] = support_device
+                continue
 
-        if text.startswith('配信開始日'):
-            film_publish_date = text.split("：")[-1]
-            result['film_publish_date'] = film_publish_date
-            continue
+            if text.startswith('配信開始日'):
+                film_publish_date = text.split("：")[-1]
+                result['film_publish_date'] = film_publish_date
+                continue
 
-        if text.startswith('商品発売日'):
-            film_sell_date = text.split("：")[-1]
-            result['film_sell_date'] = film_sell_date
-            continue
+            if text.startswith('商品発売日'):
+                film_sell_date = text.split("：")[-1]
+                result['film_sell_date'] = film_sell_date
+                continue
 
-        if text.startswith('収録時間'):
-            film_length = text.split("：")[-1]
-            result['film_length'] = film_length
-            continue
+            if text.startswith('収録時間'):
+                film_length = text.split("：")[-1]
+                result['film_length'] = film_length
+                continue
 
-        if text.startswith('出演者'):
-            film_stars = text.split("：")[-1]
-            result['film_stars'] = film_stars
-            continue
+            if text.startswith('出演者'):
+                film_stars = text.split("：")[-1]
+                result['film_stars'] = film_stars
+                continue
 
-        if text.startswith('監督'):
-            film_director = text.split("：")[-1]
-            result['film_director'] = film_director
-            continue
-        else:
-            result['film_director'] = ''
+            if text.startswith('監督'):
+                film_director = text.split("：")[-1]
+                result['film_director'] = film_director
+                continue
+            else:
+                result['film_director'] = ''
 
-        if text.startswith('シリーズ'):
-            film_series = text.split("：")[-1]
-            result['film_series'] = film_series
-            continue
+            if text.startswith('シリーズ'):
+                film_series = text.split("：")[-1]
+                result['film_series'] = film_series
+                continue
 
-        if text.startswith('メーカー'):
-            film_producers = text.split("：")[-1]
-            result['film_producers'] = film_producers
-            continue
+            if text.startswith('メーカー'):
+                film_producers = text.split("：")[-1]
+                result['film_producers'] = film_producers
+                continue
 
-        if text.startswith('レーベル'):
-            film_brand = text.split("：")[-1]
-            result['film_brand'] = film_brand
-            continue
+            if text.startswith('レーベル'):
+                film_brand = text.split("：")[-1]
+                result['film_brand'] = film_brand
+                continue
 
-        if text.startswith('コンテンツタイプ'):
-            film_content_type = text.split("：")[-1]
-            result['film_content_type'] = film_content_type
-            continue
+            if text.startswith('コンテンツタイプ'):
+                film_content_type = text.split("：")[-1]
+                result['film_content_type'] = film_content_type
+                continue
 
-        if text.startswith('ジャンル'):
-            film_type = text.split("：")[-1]
-            result['film_type'] = film_type
-            continue
+            if text.startswith('ジャンル'):
+                film_type = text.split("：")[-1]
+                result['film_type'] = film_type
+                continue
 
-        if text.startswith('関連タグ'):
-            film_tags = text.split("：")[-1].strip()
-            result['film_tags'] = film_tags
-            continue
+            if text.startswith('関連タグ'):
+                film_tags = text.split("：")[-1].strip()
+                result['film_tags'] = film_tags
+                continue
 
-        if text.startswith('品番'):
-            film_code = text.split("：")[-1].strip()
-            result['film_code'] = film_code
-            continue
-        # print(text)
-        # print("---")
+            if text.startswith('品番'):
+                film_code = text.split("：")[-1].strip()
+                result['film_code'] = film_code
+                continue
+            # print(text)
+            # print("---")
 
     film_desc = ''
     try:

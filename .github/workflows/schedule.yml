@@ -8,7 +8,8 @@ on:
 #    tags: [ "v[0-9]+.[0-9]+.[0-9]+*" ]
   schedule:
     # run on every hour
-    - cron: "0 * * * *"
+    # - cron: "0 * * * *"
+    - cron: "0 */6 * * *"
     # run on every 15 min
     # - cron: "*/15 * * * *"
 

@@ -76,18 +76,24 @@ async def download_file(url: str, destination: str) -> str:
     headers = {
         'User-Agent': random.choice(USER_AGENTS)
     }
+
     async with aiohttp.ClientSession() as session:
         async with session.get(url, headers=headers) as response:
-            response.raise_for_status()  # Raise an exception for HTTP errors
-            with open(destination, 'wb') as file:
-                while True:
-                    chunk = await response.content.read(1024)
-                    if not chunk:
-                        break
-                    file.write(chunk)
+            try:
+                response.raise_for_status()  # Raise an exception for HTTP errors
+                with open(destination, 'wb') as file:
+                    while True:
+                        chunk = await response.content.read(1024)
+                        if not chunk:
+                            break
+                        file.write(chunk)
 
-            print(f'>>> Download completed: {destination}')
-    return destination
+                print(f'>>> Download completed: {destination}')
+                return destination
+
+            except Exception as e:
+                print(f">>> 下载文件失败: {e}")
+                return ""
 
 
 def get_filename_from_url(url: str) -> str:
