@@ -49,16 +49,19 @@ async def create_telegraph_post(run_date: str):
         tgph_post_url = ''
         async with AsyncTelegraph() as telegraph:
             await telegraph.create_account(short_name='dmm-av-daily')
+            try:
+                response = await telegraph.create_page(
+                    f'{item.film_title}',
+                    html_content=generate_html_content(item, image_urls_on_telegraph),
+                    author_name='dmm-av-daily',
+                    author_url='https://t.me/dmm_av'
+                )
+                tgph_post_url = response['url']
 
-            response = await telegraph.create_page(
-                f'{item.film_title}',
-                html_content=generate_html_content(item, image_urls_on_telegraph),
-                author_name='dmm-av-daily',
-                author_url='https://t.me/dmm_av'
-            )
-            tgph_post_url = response['url']
-
-            print(f">>> Finish to post to Telegraph: {tgph_post_url}")
+                print(f">>> Finish to post to Telegraph: {tgph_post_url}")
+            except Exception as e:
+                print(f"创建Telegraph post失败: {e}")
+                continue
             # update telegraph post url to db
             telegraph_info.telegraph_post_url = tgph_post_url
             telegraph_info.has_create_post = True

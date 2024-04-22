@@ -91,10 +91,15 @@ async def push_telegram_channel(run_date: str):
             ]
             reply_markup = InlineKeyboardMarkup(keyboard)
 
-            # Send the photo with the caption and buttons
-            await bot.send_photo(chat_id=CHAT_ID, photo=photo_path, caption=caption, reply_markup=reply_markup,
-                                 parse_mode='MarkdownV2')
-            await asyncio.sleep(1)
+            try:
+                # Send the photo with the caption and buttons
+                await bot.send_photo(chat_id=CHAT_ID, photo=photo_path, caption=caption, reply_markup=reply_markup,
+                                     parse_mode='MarkdownV2', read_timeout=60 * 60, write_timeout=60 * 60,
+                                     connect_timeout=60 * 60)
+            except Exception as e:
+                print(f"推送到频道失败: {e}")
+                continue
+            await asyncio.sleep(3)
             tgph_poster.has_push_channel = True
             try:
                 database.session.commit()

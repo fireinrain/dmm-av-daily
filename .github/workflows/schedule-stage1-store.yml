@@ -6,10 +6,10 @@ on:
     branches:
       - master
 #    tags: [ "v[0-9]+.[0-9]+.[0-9]+*" ]
-  schedule:
+#  schedule:
     # run on every hour
     # - cron: "0 * * * *"
-    - cron: "0 */6 * * *"
+#    - cron: "0 */3 * * *"
     # run on every 15 min
     # - cron: "*/15 * * * *"
 
@@ -38,7 +38,7 @@ jobs:
 
     - name: Run DMM AV Daily Push
       run: |
-        python main.py
+        python main.py store
 
     - name: Check for changes
       id: git-status
