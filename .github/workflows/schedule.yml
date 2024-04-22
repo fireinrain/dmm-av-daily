@@ -63,14 +63,14 @@ jobs:
         python main.py push
 
     - name: Check for changes
-      id: git-status
+      id: git-status2
       run: |
         git diff --exit-code || echo "::set-output name=changed::true"
       continue-on-error: true
 
     # Runs a set of commands using the runners shell
     - name: Push to origin master
-      if: steps.git-status.outputs.changed == 'true'
+      if: steps.git-status2.outputs.changed == 'true'
       run: |
         echo start push
         git config --global user.name "fireinrain"
