@@ -163,17 +163,17 @@ async def patch_tg_channel_push():
                 translated_texts['ZH'] = ''
             # Caption for the photo
             formatted_date = run_date.replace("-", "")
-            caption = (f"番号: `{item.film_code}`, 演员: `{item.film_stars}`\n"
+            caption = (f"番号: `{film_detail.film_code}`, 演员: `{film_detail.film_stars}`\n"
                        f"标题: `{film_title}`\n"
                        f"```{translated_texts['ZH']}```\n"
                        f"\#D{formatted_date}")
 
             suffix = '#query#jump'
             # URLs for the buttons
-            url1 = f'https://Missav.com/search/{item.film_code}'
-            url2 = f'https://www5.Javmost.com/search/{item.film_code}'
-            url3 = f'https://Jable.tv/search/{item.film_code}'
-            url4 = f'https://netflav5.com/search?type=title&keyword={item.film_code}'
+            url1 = f'https://Missav.com/search/{film_detail.film_code}'
+            url2 = f'https://www5.Javmost.com/search/{film_detail.film_code}'
+            url3 = f'https://Jable.tv/search/{film_detail.film_code}'
+            url4 = f'https://netflav5.com/search?type=title&keyword={film_detail.film_code}'
 
             url5 = f'{film_detail.telegraph_post_url}'
             # https://Missav.com/search/%s#query#jump
