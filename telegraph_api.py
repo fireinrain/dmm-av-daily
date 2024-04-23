@@ -40,7 +40,7 @@ async def create_telegraph_post(run_date: str):
             if download_file == "":
                 continue
             download_files.append(download_file)
-            await asyncio.sleep(0.01)
+            await asyncio.sleep(0.05)
         # 上传到telegraph
         image_urls_on_telegraph = []
         try:
