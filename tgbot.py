@@ -175,7 +175,7 @@ async def patch_tg_channel_push():
             url3 = f'https://Jable.tv/search/{film_detail.film_code}'
             url4 = f'https://netflav5.com/search?type=title&keyword={film_detail.film_code}'
 
-            url5 = f'{film_detail.telegraph_post_url}'
+            url5 = f'{item.telegraph_post_url}'
             # https://Missav.com/search/%s#query#jump
             # https://www5.Javmost.com/search/%s/#query#jump
 
