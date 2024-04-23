@@ -138,7 +138,7 @@ async def patch_tg_channel_push():
             # Local path to the photo to be sent
             photo_path = poster_url
 
-            film_title = item.film_title
+            film_title = film_detail.film_title
             if '|' in film_title:
                 film_title = film_title.replace('|', '\|')
 
