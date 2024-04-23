@@ -73,13 +73,15 @@ USER_AGENTS = [
 
 
 async def download_file(url: str, destination: str) -> str:
+    print(f">>> 下载: {url},保存为: {destination}")
     headers = {
         'User-Agent': random.choice(USER_AGENTS)
     }
-
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url, headers=headers) as response:
-            try:
+    try:
+        s = None
+        async with aiohttp.ClientSession() as session:
+            s = session
+            async with session.get(url, headers=headers) as response:
                 response.raise_for_status()  # Raise an exception for HTTP errors
                 with open(destination, 'wb') as file:
                     while True:
@@ -91,9 +93,10 @@ async def download_file(url: str, destination: str) -> str:
                 print(f'>>> Download completed: {destination}')
                 return destination
 
-            except Exception as e:
-                print(f">>> 下载文件失败: {e}")
-                return ""
+    except Exception as e:
+        await s.close()
+        print(f">>> 下载文件失败: {e}")
+        return ""
 
 
 def get_filename_from_url(url: str) -> str:
