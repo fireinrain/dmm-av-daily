@@ -124,6 +124,91 @@ async def push_telegram_channel(run_date: str):
             print(f">>> Telegram 频道推送任务已完成")
 
 
+async def patch_tg_channel_push():
+    bot = Bot(BOT_TOKEN)
+    not_pushs = database.session.query(database.TelegramInfo).filter_by(has_push_channel=False).all()
+    for item in not_pushs:
+        # get poster url
+        film_detail = database.session.query(database.FilmDetailItem).filter_by(id=item.film_detail_id).first()
+        # set message to tg channel
+        # Initialize the updater
+        poster_url = film_detail.film_poster_url
+        async with bot:
+
+            # Local path to the photo to be sent
+            photo_path = poster_url
+
+            film_title = item.film_title
+            if '|' in film_title:
+                film_title = film_title.replace('|', '\|')
+
+            if '#' in film_title:
+                film_title = film_title.replace('#', '\#')
+
+            if '-' in film_title:
+                film_title = film_title.replace('-', '\-')
+
+            if '.' in film_title:
+                film_title = film_title.replace('.', ' ')
+            if '`' in film_title:
+                film_title = film_title.replace('`', ' ')
+            run_date = film_detail.film_publish_date.replace("/", "-")
+            # do translate title
+            translated_texts = {}
+            try:
+                translated_texts = await traslation.translate_text(film_title, 'JP', ['ZH', ])
+                translated_texts['ZH'] = translated_texts['ZH'].replace('\r', '').replace('\n', '').replace('\r\n', '')
+            except Exception as e:
+                print(f">>> 翻译作品标题失败: {e}")
+                translated_texts['ZH'] = ''
+            # Caption for the photo
+            formatted_date = run_date.replace("-", "")
+            caption = (f"番号: `{item.film_code}`, 演员: `{item.film_stars}`\n"
+                       f"标题: `{film_title}`\n"
+                       f"```{translated_texts['ZH']}```\n"
+                       f"\#D{formatted_date}")
+
+            suffix = '#query#jump'
+            # URLs for the buttons
+            url1 = f'https://Missav.com/search/{item.film_code}'
+            url2 = f'https://www5.Javmost.com/search/{item.film_code}'
+            url3 = f'https://Jable.tv/search/{item.film_code}'
+            url4 = f'https://netflav5.com/search?type=title&keyword={item.film_code}'
+
+            url5 = f'{film_detail.telegraph_post_url}'
+            # https://Missav.com/search/%s#query#jump
+            # https://www5.Javmost.com/search/%s/#query#jump
+
+            # Create an InlineKeyboardMarkup with two buttons
+            keyboard = [
+                [InlineKeyboardButton("MissAV观看", url=url1),
+                 InlineKeyboardButton("JavMost观看", url=url2),
+                 InlineKeyboardButton("JableTV观看", url=url3)
+                 ],
+
+                [InlineKeyboardButton("Netflav观看", url=url4),
+                 InlineKeyboardButton("Telegraph查看明细", url=url5)],
+            ]
+            reply_markup = InlineKeyboardMarkup(keyboard)
+
+            try:
+                # Send the photo with the caption and buttons
+                await bot.send_photo(chat_id=CHAT_ID, photo=photo_path, caption=caption, reply_markup=reply_markup,
+                                     parse_mode='MarkdownV2', read_timeout=60 * 60, write_timeout=60 * 60,
+                                     connect_timeout=60 * 60)
+            except Exception as e:
+                print(f"推送到频道失败: {e}")
+                continue
+            await asyncio.sleep(3)
+            film_detail.has_push_channel = True
+            try:
+                database.session.commit()
+            except Exception as e:
+                print(f"更新记录失败: {e}")
+                database.session.rollback()
+            print(f">>> Telegram Patch 频道推送任务已完成")
+
+
 if __name__ == '__main__':
     # asyncio.run(send_message2bot("你好"))
-    asyncio.run(push_telegram_channel("2002-06-14"))
+    asyncio.run(push_telegram_channel("2002-09-22"))
