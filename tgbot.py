@@ -82,11 +82,12 @@ async def push_telegram_channel(run_date: str):
                        f"```{translated_texts['ZH']}```\n"
                        f"\#D{formatted_date}")
 
+            suffix = '#query#jump'
             # URLs for the buttons
-            url1 = f'https://Missav.com/search/{item.film_code}#query#jump'
-            url2 = f'https://www5.Javmost.com/search/{item.film_code}/#query#jump'
-            url3 = f'https://Jable.tv/search/{item.film_code}/#query#jump'
-            url4 = f'https://netflav5.com/search?type=title&keyword={item.film_code}#query#jump'
+            url1 = f'https://Missav.com/search/{item.film_code}'
+            url2 = f'https://www5.Javmost.com/search/{item.film_code}'
+            url3 = f'https://Jable.tv/search/{item.film_code}'
+            url4 = f'https://netflav5.com/search?type=title&keyword={item.film_code}'
 
             url5 = f'{tgph_poster.telegraph_post_url}'
             # https://Missav.com/search/%s#query#jump
