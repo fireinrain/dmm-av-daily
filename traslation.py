@@ -40,4 +40,4 @@ async def translate_text(text, source_lang, target_langs) -> {}:
 
 
 if __name__ == '__main__':
-    asyncio.run(translate_text("おはよう", 'JP', ['ZH']))
+    asyncio.run(translate_text("下着広告モデルズ カメラが覗いた裏側", 'JP', ['ZH']))

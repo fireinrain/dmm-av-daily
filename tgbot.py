@@ -72,6 +72,7 @@ async def push_telegram_channel(run_date: str):
             translated_texts = {}
             try:
                 translated_texts = await traslation.translate_text(film_title, 'JP', ['ZH', ])
+                translated_texts['ZH'] = translated_texts['ZH'].replace('\r', '').replace('\n', '').replace('\r\n', '')
             except Exception as e:
                 print(f">>> 翻译作品标题失败: {e}")
                 translated_texts['ZH'] = ''
