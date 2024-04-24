@@ -76,12 +76,26 @@ async def push_telegram_channel(run_date: str):
             except Exception as e:
                 print(f">>> 翻译作品标题失败: {e}")
                 translated_texts['ZH'] = ''
+
             # Caption for the photo
             formatted_date = run_date.replace("-", "")
-            caption = (f"番号: `{item.film_code}`, 演员: `{item.film_stars}`\n"
+            split_star = []
+            stars = item.film_stars.replace("-", "")
+            if '----' in item.film_stars:
+                split_star = ['']
+            else:
+                split_star = item.film_stars.split(" ")
+                if len(split_star) >= 3:
+                    split_star = split_star[:3]
+                split_star = [f'\#{i}' for i in split_star]
+            dvd_id = utils.convert_cid2code(item.film_code)
+            # tg markdownv2 不支持字符串中有- 所以要转义,tg caption 不支持-，
+            # 所以设置为去掉
+            dvd_id = dvd_id.replace("-", "")
+            caption = (f"番号: `{dvd_id}`, 演员: `{stars}`\n"
                        f"标题: `{film_title}`\n"
                        f"```{translated_texts['ZH']}```\n"
-                       f"\#D{formatted_date}")
+                       f"\#D{formatted_date} \#{dvd_id} {' '.join(split_star)}")
 
             suffix = '#query#jump'
             # URLs for the buttons
