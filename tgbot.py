@@ -164,6 +164,7 @@ async def patch_tg_channel_push():
             # Caption for the photo
             formatted_date = run_date.replace("-", "")
             split_star = []
+            stars = film_detail.film_stars.replace("-", "")
             if '----' in film_detail.film_stars:
                 split_star = ['']
             else:
@@ -172,7 +173,7 @@ async def patch_tg_channel_push():
                     split_star = split_star[:3]
                 split_star = [f'\#{i}' for i in split_star]
             dvd_id = utils.convert_cid2code(film_detail.film_code)
-            caption = (f"番号: `{dvd_id}`, 演员: `{film_detail.film_stars}`\n"
+            caption = (f"番号: `{dvd_id}`, 演员: `{stars}`\n"
                        f"标题: `{film_title}`\n"
                        f"```{translated_texts['ZH']}```\n"
                        f"\#D{formatted_date} \#{dvd_id} {' '.join(split_star)}")
