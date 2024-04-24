@@ -69,13 +69,12 @@ async def push_telegram_channel(run_date: str):
                 film_title = film_title.replace('`', ' ')
 
             # do translate title
-            translated_texts = {}
+            translated_text = ''
             try:
                 translated_texts = await traslation.translate_text(film_title, 'JP', ['ZH', ])
-                translated_texts['ZH'] = translated_texts['ZH'].replace('\r', '').replace('\n', '').replace('\r\n', '')
+                translated_text = translated_texts['ZH'].replace('\r', '').replace('\n', '').replace('\r\n', '')
             except Exception as e:
                 print(f">>> 翻译作品标题失败: {e}")
-                translated_texts['ZH'] = ''
 
             # Caption for the photo
             formatted_date = run_date.replace("-", "")
@@ -92,9 +91,9 @@ async def push_telegram_channel(run_date: str):
             # tg markdownv2 不支持字符串中有- 所以要转义,tg caption 不支持-，
             # 所以设置为去掉
             dvd_id = dvd_id.replace("-", "")
-            caption = (f"番号: `{dvd_id}`, 演员: `{stars}`\n"
-                       f"标题: `{film_title}`\n"
-                       f"```{translated_texts['ZH']}```\n"
+            caption = (f'番号: `{dvd_id}`, 演员: `{stars}`\n'
+                       f'标题: `{film_title}`\n'
+                       f'{translated_text}\n'
                        f"\#D{formatted_date} \#{dvd_id} {' '.join(split_star)}")
 
             suffix = '#query#jump'
@@ -168,13 +167,13 @@ async def patch_tg_channel_push():
                 film_title = film_title.replace('`', ' ')
             run_date = film_detail.film_publish_date.replace("/", "-")
             # do translate title
-            translated_texts = {}
+            translated_text = ''
             try:
                 translated_texts = await traslation.translate_text(film_title, 'JP', ['ZH', ])
-                translated_texts['ZH'] = translated_texts['ZH'].replace('\r', '').replace('\n', '').replace('\r\n', '')
+                translated_text = translated_texts['ZH'].replace('\r', '').replace('\n', '').replace('\r\n', '')
             except Exception as e:
                 print(f">>> 翻译作品标题失败: {e}")
-                translated_texts['ZH'] = ''
+
             # Caption for the photo
             formatted_date = run_date.replace("-", "")
             split_star = []
@@ -192,7 +191,7 @@ async def patch_tg_channel_push():
             dvd_id = dvd_id.replace("-", "")
             caption = (f"番号: `{dvd_id}`, 演员: `{stars}`\n"
                        f"标题: `{film_title}`\n"
-                       f"```{translated_texts['ZH']}```\n"
+                       f"{translated_text}\n"
                        f"\#D{formatted_date} \#{dvd_id} {' '.join(split_star)}")
 
             suffix = '#query#jump'
