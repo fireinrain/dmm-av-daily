@@ -163,10 +163,18 @@ async def patch_tg_channel_push():
                 translated_texts['ZH'] = ''
             # Caption for the photo
             formatted_date = run_date.replace("-", "")
+            split_star = []
+            if '----' in film_detail.film_stars:
+                split_star = ['']
+            else:
+                split_star = film_detail.film_stars.split(" ")
+                if len(split_star) >= 3:
+                    split_star = split_star[:3]
+                split_star = [f'#{i}' for i in split_star]
             caption = (f"番号: `{film_detail.film_code}`, 演员: `{film_detail.film_stars}`\n"
                        f"标题: `{film_title}`\n"
                        f"```{translated_texts['ZH']}```\n"
-                       f"\#D{formatted_date}")
+                       f"\#D{formatted_date} #{film_detail.film_code} {' '.join(split_star)}")
 
             suffix = '#query#jump'
             # URLs for the buttons

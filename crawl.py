@@ -1,3 +1,5 @@
+import asyncio
+
 import aiohttp
 from aiohttp_socks import ProxyType, ProxyConnector, ChainProxyConnector
 from bs4 import BeautifulSoup
@@ -166,7 +168,8 @@ def extract_film_detail_item(film_detail_url: str, html_content: str) -> dict:
             if text == '':
                 continue
             if '自動生成のため、関連度の低いタグが                    表示される場合があります。' in text:
-                text = text.replace('自動生成のため、関連度の低いタグが                    表示される場合があります。', '')
+                text = text.replace('自動生成のため、関連度の低いタグが                    表示される場合があります。',
+                                    '')
 
             if text.startswith('VR対応デバイス'):
                 support_device = text.split("：")[-1]
@@ -189,8 +192,17 @@ def extract_film_detail_item(film_detail_url: str, html_content: str) -> dict:
                 continue
 
             if text.startswith('出演者'):
-                film_stars = text.split("：")[-1]
-                result['film_stars'] = film_stars
+                dats = data_tag.find_all('a')
+                if len(dats) >= 2:
+                    values = []
+                    for i in dats:
+                        dt = i.text
+                        values.append(dt)
+                    multi_value = ' '.join(values)
+                    result['film_stars'] = multi_value
+                else:
+                    film_stars = text.split("：")[-1]
+                    result['film_stars'] = film_stars
                 continue
 
             if text.startswith('監督'):
@@ -274,3 +286,13 @@ def extract_film_detail_item(film_detail_url: str, html_content: str) -> dict:
     print(f"Extract detail data from: {film_poster_url} successfully!")
     print("----------------------------------------------------------------")
     return result
+
+
+async def main():
+    data = await fetch_data('https://www.dmm.co.jp/digital/videoa/-/detail/=/cid=red150/',
+                            'socks5://socks5-proxy-bomb:socks5-proxy-bomb@127.0.0.1:1080')
+    extract_film_detail_item('https://www.dmm.co.jp/digital/videoa/-/detail/=/cid=trl006/', data)
+
+
+if __name__ == '__main__':
+    asyncio.run(main())
