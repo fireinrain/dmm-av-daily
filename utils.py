@@ -126,6 +126,14 @@ def clean_img_folder(img_folder: str):
                     print(f">>> Error: {e.strerror} while deleting file {file_path}")
 
 
+# cid 转换为dvd id
+def convert_cid2code(cid: str) -> str:
+    letter = re.sub(r'[0-9]', '', cid)
+    number_part = re.sub(r'[a-zA-Z]', '', cid)
+    formatted_string = f"{letter}-{int(number_part):03d}"
+    return formatted_string
+
+
 if __name__ == '__main__':
     date_list = generate_date_list(end_date='2004-02-01')
     print(date_list)

@@ -170,11 +170,12 @@ async def patch_tg_channel_push():
                 split_star = film_detail.film_stars.split(" ")
                 if len(split_star) >= 3:
                     split_star = split_star[:3]
-                split_star = [f'#{i}' for i in split_star]
-            caption = (f"番号: `{film_detail.film_code}`, 演员: `{film_detail.film_stars}`\n"
+                split_star = [f'\#{i}' for i in split_star]
+            dvd_id = utils.convert_cid2code(film_detail.film_code)
+            caption = (f"番号: `{dvd_id}`, 演员: `{film_detail.film_stars}`\n"
                        f"标题: `{film_title}`\n"
                        f"```{translated_texts['ZH']}```\n"
-                       f"\#D{formatted_date} #{film_detail.film_code} {' '.join(split_star)}")
+                       f"\#D{formatted_date} \#{dvd_id} {' '.join(split_star)}")
 
             suffix = '#query#jump'
             # URLs for the buttons
