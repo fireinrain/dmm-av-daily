@@ -91,6 +91,7 @@ async def push_telegram_channel(run_date: str):
             # tg markdownv2 不支持字符串中有- 所以要转义,tg caption 不支持-，
             # 所以设置为去掉
             dvd_id2 = dvd_id.replace("-", "")
+            translated_text = utils.clean_str_for_tg(translated_text)
             caption = (f'番号: `{dvd_id}`, 演员: `{stars}`\n'
                        f'标题: `{film_title}`\n'
                        f'{translated_text}\n'
@@ -188,6 +189,7 @@ async def patch_tg_channel_push():
             dvd_id = utils.convert_cid2code(film_detail.film_code)
             # tg markdownv2 不支持字符串中有- 所以要转义,tg caption 不支持-，
             # 所以设置为去掉
+            translated_text = utils.clean_str_for_tg(translated_text)
             dvd_id2 = dvd_id.replace("-", "")
             caption = (f"番号: `{dvd_id}`, 演员: `{stars}`\n"
                        f"标题: `{film_title}`\n"

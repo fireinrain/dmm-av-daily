@@ -134,7 +134,40 @@ def convert_cid2code(cid: str) -> str:
     return formatted_string
 
 
+SPECIAL_CHARS = [
+    '\\',
+    '_',
+    '*',
+    '[',
+    ']',
+    '(',
+    ')',
+    '~',
+    '`',
+    '>',
+    '<',
+    '&',
+    '#',
+    '+',
+    '-',
+    '=',
+    '|',
+    '{',
+    '}',
+    '.',
+    '!'
+]
+
+
+def clean_str_for_tg(data_str: str) -> str:
+    for char in SPECIAL_CHARS:
+        data_str = data_str.replace(char, f'\\{char}')
+    return data_str
+
+
 if __name__ == '__main__':
-    date_list = generate_date_list(end_date='2004-02-01')
-    print(date_list)
-    clean_img_folder("imgs")
+    # date_list = generate_date_list(end_date='2004-02-01')
+    # print(date_list)
+    # clean_img_folder("imgs")
+    tg = clean_str_for_tg('[abc] (nihao).')
+    print(tg)
