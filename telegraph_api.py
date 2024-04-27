@@ -106,5 +106,75 @@ def generate_html_content(item: database.FilmDetailItem, image_urls: []) -> str:
             f'{sample_images_tags_str}')
 
 
+async def patch_info2telegraph():
+    tginfos = database.session.query(database.TelegramInfo).filter_by(
+        has_create_post=False).all()
+    for info in tginfos:
+        item_detail = database.session.query(database.FilmDetailItem).filter_by(id=info.film_detail_id).first()
+        if item_detail is  None:
+            # store record in database
+            telegraph_info = database.TelegramInfo(
+                telegraph_post_url="",
+                film_detail_id=item_detail.id
+            )
+            try:
+                database.session.add(telegraph_info)
+                database.session.commit()
+                print(f">>> Insert telegraph info data successfully!")
+            except Exception as e:
+                print(f">>> Error insert for telegraph info data: {e}")
+                database.session.rollback()
+
+        # upload pic to telegraph and store the url
+        image_urls = []
+        image_urls.append(item_detail.film_poster_url)
+        sample_urls = [item_detail.film_sample_image_prefix + i for i in item_detail.film_sample_images.split(",")]
+        image_urls.extend(sample_urls)
+        # 下载图片
+        download_files = []
+        for image_url in image_urls:
+            file_name = utils.get_filename_from_url(image_url)
+            download_file = await utils.download_file(image_url, "imgs" + os.sep + file_name)
+            if download_file == "":
+                continue
+            download_files.append(download_file)
+            await asyncio.sleep(0.05)
+        # 上传到telegraph
+        image_urls_on_telegraph = []
+        try:
+            image_urls_on_telegraph = await AsyncUploadFile(download_files)
+            await asyncio.sleep(3)
+        except Exception as e:
+            print(f"样品图上传Telegraph 失败: {e}")
+
+        tgph_post_url = ''
+        async with AsyncTelegraph() as telegraph:
+            await telegraph.create_account(short_name='dmm-av-daily')
+            try:
+                response = await telegraph.create_page(
+                    f'{item_detail.film_title}',
+                    html_content=generate_html_content(item_detail, image_urls_on_telegraph),
+                    author_name='dmm-av-daily',
+                    author_url='https://t.me/dmm_av'
+                )
+                tgph_post_url = response['url']
+
+                print(f">>> Finish to post to Telegraph: {tgph_post_url}")
+            except Exception as e:
+                print(f"创建Telegraph post失败: {e}")
+                continue
+            # update telegraph post url to db
+            info.telegraph_post_url = tgph_post_url
+            info.has_create_post = True
+            try:
+                database.session.commit()
+            except Exception as e:
+                print(f"更新记录失败: {e}")
+                database.session.rollback()
+        # 清理图片下载缓存
+        print(f">>> Clean Image download cache.")
+        utils.clean_img_folder('imgs')
+
+
 if __name__ == '__main__':
     asyncio.run(create_telegraph_post("2002-06-14"))

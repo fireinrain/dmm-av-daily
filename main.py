@@ -199,6 +199,9 @@ async def main():
     elif argument == "push":
         await push_infos2telegram_channel_job()
         await tgbot.patch_tg_channel_push()
+    elif argument == "patch":
+        await telegraph_api.patch_info2telegraph()
+        await tgbot.patch_tg_channel_push()
     else:
         print(f"Invalid argument: {argument}")
         sys.exit(1)

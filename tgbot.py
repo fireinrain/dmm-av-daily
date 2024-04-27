@@ -71,6 +71,7 @@ async def push_telegram_channel(run_date: str):
             # do translate title
             translated_text = ''
             try:
+                print(f">>> 正在翻译作品标题: {item.film_publish_date},{item.film_code}")
                 translated_texts = await traslation.translate_text(film_title, 'JP', ['ZH', ])
                 translated_text = translated_texts['ZH'].replace('\r', '').replace('\n', '').replace('\r\n', '')
             except Exception as e:
@@ -128,7 +129,7 @@ async def push_telegram_channel(run_date: str):
             except Exception as e:
                 print(f"推送到频道失败: {e}")
                 continue
-            await asyncio.sleep(3)
+            await asyncio.sleep(1.5)
             tgph_poster.has_push_channel = True
             try:
                 database.session.commit()
@@ -170,6 +171,7 @@ async def patch_tg_channel_push():
             # do translate title
             translated_text = ''
             try:
+                print(f">>> 正在翻译作品标题: {film_detail.film_publish_date},{film_detail.film_code}")
                 translated_texts = await traslation.translate_text(film_title, 'JP', ['ZH', ])
                 translated_text = translated_texts['ZH'].replace('\r', '').replace('\n', '').replace('\r\n', '')
             except Exception as e:
@@ -227,8 +229,8 @@ async def patch_tg_channel_push():
             except Exception as e:
                 print(f"推送到频道失败: {e}")
                 continue
-            await asyncio.sleep(3)
-            film_detail.has_push_channel = True
+            await asyncio.sleep(1.5)
+            item.has_push_channel = True
             try:
                 database.session.commit()
             except Exception as e:
