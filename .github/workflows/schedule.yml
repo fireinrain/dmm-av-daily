@@ -6,13 +6,15 @@ on:
     branches:
       - master
 #    tags: [ "v[0-9]+.[0-9]+.[0-9]+*" ]
-  #schedule:
+  schedule:
     # run on every hour
     # - cron: "0 * * * *"
     # run on every 3 hour
     # - cron: "0 */3 * * *"
     # run on every 15 min
     # - cron: "*/45 * * * *"
+    # run on 0 and 12 clock
+    - cron: "0 0,6,12,18 * * *"
 
 
 jobs:
