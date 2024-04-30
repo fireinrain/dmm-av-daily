@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 
 
 # fetch response from a url
-async def fetch_data(url: str, proxy_url: str) -> str:
+async def fetch_data(url: str, proxy_url: str = "") -> str:
     headers = {
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
         "Accept-Encoding": "gzip, deflate, br, zstd",
@@ -35,12 +35,23 @@ async def fetch_data(url: str, proxy_url: str) -> str:
         "Upgrade-Insecure-Requests": "1",
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
     }
-    connector = ProxyConnector.from_url(proxy_url)
-
-    # Define the proxy credentials
-
-    # Create an aiohttp session with a SOCKS5 proxy that requires authentication
-    async with aiohttp.ClientSession(connector=connector) as session:
+    if proxy_url:
+        connector = ProxyConnector.from_url(proxy_url)
+        # Define the proxy credentials
+        # Create an aiohttp session with a SOCKS5 proxy that requires authentication
+        async with aiohttp.ClientSession(connector=connector) as session:
+            try:
+                # Use the session to perform HTTP requests with SOCKS5 proxy
+                async with session.get(url, headers=headers) as response:
+                    # Check if the request was successful
+                    if response.status == 200:
+                        # Read and return the response text
+                        return await response.text()
+                    else:
+                        return f"Error: {response.status}"
+            except Exception as e:
+                return f"Error: request failed: {e}"
+    async with aiohttp.ClientSession() as session:
         try:
             # Use the session to perform HTTP requests with SOCKS5 proxy
             async with session.get(url, headers=headers) as response:
@@ -159,6 +170,7 @@ def extract_film_detail_item(film_detail_url: str, html_content: str) -> dict:
     result['film_type'] = ''
     result['film_tags'] = ''
     result['film_code'] = ''
+    result['film_director'] = ''
     data_tags = soup.select_one('table.mg-b20 > tr')
     if data_tags:
         for data_tag in data_tags:
@@ -289,9 +301,17 @@ def extract_film_detail_item(film_detail_url: str, html_content: str) -> dict:
 
 
 async def main():
-    data = await fetch_data('https://www.dmm.co.jp/digital/videoa/-/detail/=/cid=red150/',
-                            'socks5://socks5-proxy-bomb:socks5-proxy-bomb@127.0.0.1:1080')
-    extract_film_detail_item('https://www.dmm.co.jp/digital/videoa/-/detail/=/cid=trl006/', data)
+    # data = await fetch_data('https://www.dmm.co.jp/digital/videoa/-/detail/=/cid=red150/',
+    #                         'socks5://socks5-proxy-bomb:socks5-proxy-bomb@127.0.0.1:1080')
+    # extract_film_detail_item('https://www.dmm.co.jp/digital/videoa/-/detail/=/cid=trl006/', data)
+
+    # data2 = await fetch_data('https://www.dmm.co.jp/digital/videoa/-/delivery-list/=/delivery_date=2004-02-22/')
+    # item = extract_film_intro_item(data2)
+
+    data = await fetch_data('https://www.dmm.co.jp/digital/videoa/-/detail/=/cid=red150/')
+    items = extract_film_detail_item('https://www.dmm.co.jp/digital/videoa/-/detail/=/cid=trl006/', data)
+
+    print()
 
 
 if __name__ == '__main__':
