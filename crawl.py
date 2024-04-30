@@ -4,6 +4,8 @@ import aiohttp
 from aiohttp_socks import ProxyType, ProxyConnector, ChainProxyConnector
 from bs4 import BeautifulSoup
 
+default_no_photo_url = 'https://cdn.jsdelivr.net/gh/fireinrain/picx-images-hosting@master/20240430/image.252qdcg10bog.png'
+
 
 # fetch response from a url
 async def fetch_data(url: str, proxy_url: str = "") -> str:
@@ -137,6 +139,8 @@ def extract_film_detail_item(film_detail_url: str, html_content: str) -> dict:
         print(f"Exception on finding poster url:{e}")
 
         pass
+    if not film_poster_url:
+        film_poster_url = default_no_photo_url
     result['film_poster_url'] = film_poster_url
     film_pic_url = ""
     try:
@@ -146,6 +150,8 @@ def extract_film_detail_item(film_detail_url: str, html_content: str) -> dict:
         print(f"Exception on finding pic url:{e}")
 
         pass
+    if not film_pic_url:
+        film_pic_url = default_no_photo_url
     result['film_pic_url'] = film_pic_url
     # film_title = small_poster_atg.attrs['alt']
     film_title = ""
