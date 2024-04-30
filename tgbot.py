@@ -87,7 +87,7 @@ async def push_telegram_channel(run_date: str):
                 split_star = item.film_stars.split(" ")
                 if len(split_star) >= 3:
                     split_star = split_star[:3]
-                split_star = [f'\#{i}' for i in split_star]
+                split_star = [f'#{i}' for i in split_star]
             dvd_id = utils.convert_cid2code(item.film_code)
             # tg markdownv2 不支持字符串中有- 所以要转义,tg caption 不支持-，
             # 所以设置为去掉
@@ -96,7 +96,8 @@ async def push_telegram_channel(run_date: str):
             caption = (f'番号: `{dvd_id}`, 演员: `{stars}`\n'
                        f'标题: `{film_title}`\n'
                        f'{translated_text}\n'
-                       f"\#D{formatted_date} \#{dvd_id2} {' '.join(split_star)}")
+                       f"#D{formatted_date} #{dvd_id2} {' '.join(split_star)}")
+            caption = utils.clean_str_for_tg(caption)
 
             suffix = '#query#jump'
             # URLs for the buttons
@@ -187,7 +188,7 @@ async def patch_tg_channel_push():
                 split_star = film_detail.film_stars.split(" ")
                 if len(split_star) >= 3:
                     split_star = split_star[:3]
-                split_star = [f'\#{i}' for i in split_star]
+                split_star = [f'#{i}' for i in split_star]
             dvd_id = utils.convert_cid2code(film_detail.film_code)
             # tg markdownv2 不支持字符串中有- 所以要转义,tg caption 不支持-，
             # 所以设置为去掉
@@ -196,7 +197,8 @@ async def patch_tg_channel_push():
             caption = (f"番号: `{dvd_id}`, 演员: `{stars}`\n"
                        f"标题: `{film_title}`\n"
                        f"{translated_text}\n"
-                       f"\#D{formatted_date} \#{dvd_id2} {' '.join(split_star)}")
+                       f"#D{formatted_date} #{dvd_id2} {' '.join(split_star)}")
+            caption = utils.clean_str_for_tg(caption)
 
             suffix = '#query#jump'
             # URLs for the buttons
