@@ -148,13 +148,13 @@ async def patch_tg_channel_push():
         film_detail = database.session.query(database.FilmDetailItem).filter_by(id=item.film_detail_id).first()
         # set message to tg channel
         # Initialize the updater
-        poster_url = film_detail.film_poster_url
+        poster_url = film_detail.film_poster_url.clone()
         async with bot:
 
             # Local path to the photo to be sent
             photo_path = poster_url
 
-            film_title = film_detail.film_title
+            film_title = film_detail.film_title.clone()
             if '|' in film_title:
                 film_title = film_title.replace('|', '\|')
 
@@ -168,7 +168,7 @@ async def patch_tg_channel_push():
                 film_title = film_title.replace('.', ' ')
             if '`' in film_title:
                 film_title = film_title.replace('`', ' ')
-            run_date = film_detail.film_publish_date.replace("/", "-")
+            run_date = film_detail.film_publish_date.clone().replace("/", "-")
             # do translate title
             translated_text = ''
             try:
@@ -181,15 +181,15 @@ async def patch_tg_channel_push():
             # Caption for the photo
             formatted_date = run_date.replace("-", "")
             split_star = []
-            stars = film_detail.film_stars.replace("-", "")
+            stars = film_detail.film_stars.clone().replace("-", "")
             if '----' in film_detail.film_stars:
                 split_star = ['']
             else:
-                split_star = film_detail.film_stars.split(" ")
+                split_star = film_detail.film_stars.clone().split(" ")
                 if len(split_star) >= 3:
                     split_star = split_star[:3]
                 split_star = [f'#{i}' for i in split_star]
-            dvd_id = utils.convert_cid2code(film_detail.film_code)
+            dvd_id = utils.convert_cid2code(film_detail.film_code.clone())
             # tg markdownv2 不支持字符串中有- 所以要转义,tg caption 不支持-，
             # 所以设置为去掉
             translated_text = utils.clean_str_for_tg(translated_text)

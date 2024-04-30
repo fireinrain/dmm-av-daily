@@ -150,7 +150,7 @@ def extract_film_detail_item(film_detail_url: str, html_content: str) -> dict:
         print(f"Exception on finding pic url:{e}")
 
         pass
-    if not film_pic_url:
+    if not film_pic_url or film_pic_url == '0':
         film_pic_url = default_no_photo_url
     result['film_pic_url'] = film_pic_url
     # film_title = small_poster_atg.attrs['alt']
