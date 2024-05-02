@@ -26,6 +26,8 @@ async def create_telegraph_post(run_date: str):
         except Exception as e:
             print(f">>> Error insert for telegraph info data: {e}")
             database.session.rollback()
+        # TODO 暂时跳过处理
+        continue
 
         # upload pic to telegraph and store the url
         image_urls = []
@@ -111,7 +113,7 @@ async def patch_info2telegraph():
         has_create_post=False).all()
     for info in tginfos:
         item_detail = database.session.query(database.FilmDetailItem).filter_by(id=info.film_detail_id).first()
-        if item_detail is  None:
+        if item_detail is None:
             # store record in database
             telegraph_info = database.TelegramInfo(
                 telegraph_post_url="",

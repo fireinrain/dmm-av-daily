@@ -11,6 +11,7 @@ def generate_date_list(start_date: str = "2002-06-14", end_date: str = "-1") -> 
     if end_date == "-1":
         # Get the current date
         current_date = datetime.now()
+        # current_date = current_date + timedelta(days=7)
 
         # Format the date
         end_date = current_date.strftime('%Y-%m-%d')

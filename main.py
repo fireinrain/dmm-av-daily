@@ -15,11 +15,12 @@ from database import DmmAvDaily, FilmDetailItem, FilmIntroItem
 SOCKS5_PROXY_URL = None
 socks5_proxy_url = os.getenv('SOCKS5_PROXY_URL')
 if socks5_proxy_url:
-    SOCKS5_PROXY_URL = socks5_proxy_url
+    SOCKS5_PROXY_URL = ""
 else:
     print(f"you must provide a socks5 proxy url like: `socks5://username:pass@host:port`!")
 
 
+# dmm 数据提供截止到当前日期的后七天
 def init_basic_db():
     latest_record = database.session.query(DmmAvDaily).order_by(desc(DmmAvDaily.id)).first()
     if latest_record is None:
@@ -57,7 +58,7 @@ async def store_dmm_data_job():
     # 初始化基础db数据
     init_basic_db()
     # 批量查询出需要处理的url
-    need_process_urls = database.session.query(DmmAvDaily).filter_by(has_run=False).limit(31).all()
+    need_process_urls = database.session.query(DmmAvDaily).filter_by(has_run=False).limit(6982).all()
     for dmm in need_process_urls:
         print(f"Fetching av daily data from: {dmm.fetch_url}")
         # 起始日期
@@ -84,6 +85,10 @@ async def store_dmm_data_job():
                 intro_item.extend(page_intro_item)
         # insert intro_item to database
         print(intro_item)
+        if len(intro_item) <= 0:
+            print(f">>> 爬取存在错误: {dmm.run_date}")
+            continue
+            # sys.exit(0)
 
         batch_inserts = []
         for item in intro_item:
@@ -152,7 +157,7 @@ async def store_dmm_data_job():
             except Exception as e:
                 print(f">>> Error insert for dmm av detail  data: {e}")
                 database.session.rollback()
-            await asyncio.sleep(1)
+            await asyncio.sleep(0.1)
 
         dmm.has_run = True
         try:
@@ -179,7 +184,7 @@ async def store_dmm_data_job():
 async def push_infos2telegram_channel_job():
     # 推送tg bot消息到频道
     need_process_urls = database.session.query(DmmAvDaily).filter_by(has_run=True).order_by(asc(DmmAvDaily.id)).limit(
-        31).all()
+        7).all()
     for dmm in need_process_urls:
         await tgbot.push_telegram_channel(dmm.run_date)
     print(f">>> 推送信息到Telegram Channel完成!")
