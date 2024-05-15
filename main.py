@@ -87,6 +87,8 @@ async def store_dmm_data_job():
         print(intro_item)
         if len(intro_item) <= 0:
             print(f">>> 爬取存在错误: {dmm.run_date}")
+            # https://www.dmm.co.jp/digital/videoa/-/delivery-list/=/delivery_date=2018-12-04/
+            # 404 not found
             continue
             # sys.exit(0)
 
