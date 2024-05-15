@@ -166,6 +166,10 @@ def clean_str_for_tg(data_str: str) -> str:
     return data_str
 
 
+def check_if_file_exists(file_path: str) -> bool:
+    return os.path.exists(file_path)
+
+
 if __name__ == '__main__':
     # date_list = generate_date_list(end_date='2004-02-01')
     # print(date_list)

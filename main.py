@@ -84,7 +84,7 @@ async def store_dmm_data_job():
                 page_intro_item = crawl.extract_film_intro_item(dmm_av_daily_page_resp)
                 intro_item.extend(page_intro_item)
         # insert intro_item to database
-        print(intro_item)
+        print(f">>>简介数据: {intro_item}")
         if len(intro_item) <= 0:
             print(f">>> 爬取存在错误: {dmm.run_date}")
             # https://www.dmm.co.jp/digital/videoa/-/delivery-list/=/delivery_date=2018-12-04/
@@ -208,6 +208,17 @@ async def main():
         await tgbot.patch_tg_channel_push()
     elif argument == "patch":
         await telegraph_api.patch_info2telegraph()
+        await tgbot.patch_tg_channel_push()
+    elif argument == "normal":
+        # check if has db file, if not, exit immediately
+        exists = utils.check_if_file_exists("./data/dmm-av-daily.db")
+        if not exists:
+            print(f">>>: You need to create db file first!")
+            sys.exit(1)
+        await telegraph_api.patch_info2telegraph()
+        await tgbot.patch_tg_channel_push()
+        await store_dmm_data_job()
+        await push_infos2telegram_channel_job()
         await tgbot.patch_tg_channel_push()
     else:
         print(f"Invalid argument: {argument}")

@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  dmm-av-daily:
+    image: liuzy/dmm-av-daily:latest
+    ports:
+      - "8000:8000"
+    environment:
+      - TG_BOT_TOKEN=xxxxxxxxxxxxxxxx
+      - TG_CHAT_ID=xxxxxxxxxxxxxxxx
+    volumes:
+      - ./data/dmm-av-daily.db:/app/data/dmm-av-daily.db
