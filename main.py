@@ -11,6 +11,7 @@ import tgbot
 import utils
 import database
 from database import DmmAvDaily, FilmDetailItem, FilmIntroItem
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 SOCKS5_PROXY_URL = None
 socks5_proxy_url = os.getenv('SOCKS5_PROXY_URL')
@@ -192,6 +193,18 @@ async def push_infos2telegram_channel_job():
     print(f">>> 推送信息到Telegram Channel完成!")
 
 
+async def schedule_job():
+    exists = utils.check_if_file_exists("./data/dmm-av-daily.db")
+    if not exists:
+        print(f">>>: You need to create db file first!")
+        sys.exit(1)
+    await telegraph_api.patch_info2telegraph()
+    await tgbot.patch_tg_channel_push()
+    await store_dmm_data_job()
+    await push_infos2telegram_channel_job()
+    await tgbot.patch_tg_channel_push()
+
+
 async def main():
     if len(sys.argv) != 2:
         print("Usage: python main.py <argument>")
@@ -220,6 +233,17 @@ async def main():
         await store_dmm_data_job()
         await push_infos2telegram_channel_job()
         await tgbot.patch_tg_channel_push()
+    elif argument == "scheduler":
+        scheduler = AsyncIOScheduler()
+        scheduler.add_job(schedule_job, 'cron', hour=20, minute=0)
+        scheduler.start()
+        print("Async scheduler started. Waiting for the job to run...")
+
+        # Run the asyncio event loop
+        try:
+            asyncio.get_event_loop().run_forever()
+        except (KeyboardInterrupt, SystemExit):
+            pass
     else:
         print(f"Invalid argument: {argument}")
         sys.exit(1)
