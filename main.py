@@ -206,23 +206,19 @@ async def schedule_job():
 
 
 async def main():
-    if len(sys.argv) != 2:
-        print("Usage: python main.py <argument>")
-        sys.exit(1)
+    mode = os.getenv("RUN_MODE", "normal")
 
-    argument = sys.argv[1]
-
-    if argument == "store":
+    if mode == "store":
         await store_dmm_data_job()
     # elif argument == "create":
     #     await create_telegraph_post_job()
-    elif argument == "push":
+    elif mode == "push":
         await push_infos2telegram_channel_job()
         await tgbot.patch_tg_channel_push()
-    elif argument == "patch":
+    elif mode == "patch":
         await telegraph_api.patch_info2telegraph()
         await tgbot.patch_tg_channel_push()
-    elif argument == "normal":
+    elif mode == "normal":
         # check if has db file, if not, exit immediately
         exists = utils.check_if_file_exists("./data/dmm-av-daily.db")
         if not exists:
@@ -233,7 +229,7 @@ async def main():
         await store_dmm_data_job()
         await push_infos2telegram_channel_job()
         await tgbot.patch_tg_channel_push()
-    elif argument == "scheduler":
+    elif mode == "scheduler":
         scheduler = AsyncIOScheduler()
         scheduler.add_job(schedule_job, 'cron', hour=20, minute=0)
         scheduler.start()
@@ -245,7 +241,7 @@ async def main():
         except (KeyboardInterrupt, SystemExit):
             pass
     else:
-        print(f"Invalid argument: {argument}")
+        print(f"Invalid argument: {mode}")
         sys.exit(1)
 
 
