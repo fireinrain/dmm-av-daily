@@ -1,7 +1,7 @@
 import asyncio
 
 import aiohttp
-from aiohttp_socks import ProxyType, ProxyConnector, ChainProxyConnector
+from aiohttp_socks import ProxyConnector
 from bs4 import BeautifulSoup
 
 default_no_photo_url = 'https://cdn.jsdelivr.net/gh/fireinrain/picx-images-hosting@master/20240430/image.252qdcg10bog.png'
