@@ -232,7 +232,7 @@ async def patch_tg_channel_push():
                 print(f"推送到频道失败: {e}")
                 continue
             utils.clean_img_folder("imgs")
-            await asyncio.sleep(1.5)
+            await asyncio.sleep(3)
             item.has_push_channel = True
             try:
                 database.session.commit()

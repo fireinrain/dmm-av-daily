@@ -160,7 +160,7 @@ async def store_dmm_data_job():
             except Exception as e:
                 print(f">>> Error insert for dmm av detail  data: {e}")
                 database.session.rollback()
-            await asyncio.sleep(0.1)
+            await asyncio.sleep(0.2)
 
         dmm.has_run = True
         try:

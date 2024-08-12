@@ -176,6 +176,8 @@ async def patch_info2telegraph():
         # 清理图片下载缓存
         print(f">>> Clean Image download cache.")
         utils.clean_img_folder('imgs')
+        print(f">>> Sleeping for 5s for next create telegraph post")
+        await asyncio.sleep(5)
 
 
 if __name__ == '__main__':
