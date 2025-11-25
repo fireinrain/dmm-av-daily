@@ -317,7 +317,7 @@ async def main():
     data = await fetch_data('https://www.dmm.co.jp/digital/videoa/-/detail/=/cid=red150/')
     items = extract_film_detail_item('https://www.dmm.co.jp/digital/videoa/-/detail/=/cid=trl006/', data)
 
-    print()
+    print(items)
 
 
 if __name__ == '__main__':

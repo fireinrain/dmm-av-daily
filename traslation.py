@@ -7,7 +7,7 @@ async def translate_single(text, source_lang, target_lang, session):
     if source_lang == target_lang:
         return target_lang, text
 
-    url = "https://api.deeplx.org/translate"
+    url = "https://api.deeplx.org/o0uwnTo0X2oDYJgulrviYwaQ-A4cZ7Th7Cxcw7WTobw/translate"
     payload = {
         "text": text,
         "source_lang": source_lang,
